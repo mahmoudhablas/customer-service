@@ -1,0 +1,24 @@
+micronaut:
+  application:
+    name: customer
+
+datasources:
+  default:
+    url: "jdbc:postgresql://localhost:5432/customer"
+    username: "mk"
+    password: "password"
+    driverClassName: org.postgresql.Driver
+
+jpa:
+  default:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: update   # Use 'validate' or remove for production
+        show_sql: true
+
+flyway:
+  enabled: true
+  datasources:
+    default:
+      enabled: true

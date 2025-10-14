@@ -2,6 +2,8 @@ package com.mahmoud.models;
 
 
 import io.micronaut.core.annotation.Introspected;
+import io.micronaut.core.annotation.Nullable;
+import io.micronaut.serde.annotation.Serdeable;
 import lombok.*;
 
 @Builder
@@ -10,8 +12,10 @@ import lombok.*;
 @Introspected
 @Data
 @ToString
+@Serdeable
 public class Customer {
     private String name;
-    private String id;
+    @Nullable
+    private Long id;
     private String email;
 }
