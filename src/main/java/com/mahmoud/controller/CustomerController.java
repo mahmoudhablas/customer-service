@@ -3,54 +3,48 @@ package com.mahmoud.controller;
 import com.mahmoud.models.Customer;
 import com.mahmoud.models.entities.CustomerEntity;
 import com.mahmoud.repository.CustomerRepository;
+import com.mahmoud.services.CustomerService;
+import io.micronaut.http.HttpMethod;
+import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.*;
 import jakarta.inject.Inject;
+import lombok.AllArgsConstructor;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
+@AllArgsConstructor
 public class CustomerController {
 
    private final CustomerRepository customerRepository;
+    private final CustomerService customerService;
 
-    public CustomerController(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
+
+    @Get("/customers/{id}")
+    public HttpResponse<Customer> getCustomer(@PathVariable Long id){
+
+        return HttpResponse.ok(customerService.getCustomer(id));
     }
-
-
-    // TO DO use service instead of the controller (and use map struct)
-    @Get("/customer")
-    public Customer getCustomer(@QueryValue Long id){
-        CustomerEntity customerEntity = this.customerRepository.findById(id).orElse(null);
-        if (customerEntity != null) {
-            return Customer.builder()
-                    .name(customerEntity.getName())
-                    .email(customerEntity.getEmail())
-                    .id(customerEntity.getId()).build();
-        }
-        return null;
-
+    @Get("/customers")
+    public HttpResponse<List<Customer>> getCustomers(){
+        return HttpResponse.ok(customerService.getCustomers());
     }
+    @Post("/customers")
+    public HttpResponse<Customer> createCustomer(@Body Customer customerDetails){
 
-    @Post("/customer")
-    public Customer createCustomer(@Body Customer customerDetails){
-        CustomerEntity customerEntity = CustomerEntity.builder()
-                .name(customerDetails.getName())
-                .email(customerDetails.getEmail())
-                .build();
-        this.customerRepository.save(customerEntity);
-        return Customer.builder()
-                .name(customerEntity.getName())
-                .email(customerEntity.getEmail())
-                .id(customerEntity.getId()).build();
+        return HttpResponse.created(this.customerService.createCustomer(customerDetails));
     }
-    @Delete
-    public void deleteCustomer(String customerId)
+    @Delete("/customers/{id}")
+    public HttpResponse<?> deleteCustomer(@PathVariable Long id)
     {
-        // delete the customer using the id
+        this.customerService.deleteCustomer(id);
+        return HttpResponse.noContent();
     }
-    @Put
-    public void updateCustomer(String customerDetails){
-        //update the customer using the id
+    @Put("/customers/{id}")
+    public HttpResponse<?> updateCustomer(@PathVariable Long id, @Body Customer customerDetails){
+        this.customerService.updateCustomer(id,customerDetails);
+        return HttpResponse.ok();
+
     }
 }
