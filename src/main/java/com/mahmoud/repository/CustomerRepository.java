@@ -6,5 +6,5 @@ import io.micronaut.data.repository.CrudRepository;
 
 @Repository
 public interface CustomerRepository extends CrudRepository<CustomerEntity, Long> {
-
+//    CustomerEntity findByEmail();
 }
